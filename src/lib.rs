@@ -2,6 +2,9 @@ use std::collections::hash_map::DefaultHasher;
 use std::convert::TryInto;
 use std::hash::{Hash, Hasher};
 
+///! # Maglev
+///! An implementation of the maglev consistent hashing algorithm
+
 #[derive(Debug, PartialEq)]
 pub struct Maglev {
     table: Vec<u64>,
@@ -14,6 +17,8 @@ fn calculate_hash<T: Hash>(v: &T, hasher: &mut DefaultHasher) -> u64 {
 }
 
 impl Maglev {
+    /// Creates a new hash table of table_size with given backends. The backend size 
+    /// should be a prime, else returns an error
     pub fn new(backends: &Vec<String>, table_size: u64) -> Result<Maglev, &str> {
         if primes::is_prime(table_size) {
             Ok(Maglev {
@@ -25,12 +30,15 @@ impl Maglev {
         }
     }
 
+    /// Get backend for a given index
     pub fn get_backend(&self, idx: usize) -> Option<String> {
         self.table
             .get(idx)
             .map(|i| String::from(&self.backends[*i as usize]))
     }
 
+
+    /// Add a backend to the list. Regenerates the hashing table
     pub fn put_backend(&mut self, backend: &String) -> Result<(), &str> {
         let matching: Vec<&String> = self.backends.iter().filter(|b| b == &backend).collect();
         match matching.is_empty() {
@@ -42,6 +50,7 @@ impl Maglev {
         }
     }
 
+    /// Remove a backend to the list. Regenerates the hashing table
     pub fn remove_backend(&mut self, backend: &String) -> Result<(), &str> {
         let mut idx = None;
         for (i, b) in self.backends.iter().enumerate() {
