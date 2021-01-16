@@ -20,7 +20,7 @@ bring the distributed systems to a stable state.
 
 Consistent hashing algorithms are designed to ensure minimal distruption in
 the distribution of keys on resizing buckets. To quote [wikipedia](https://en.wikipedia.org/wiki/Consistent_hashing): 
-> ..when a hash table is resized, only n / m {\displaystyle n/m} n/m keys need to be remapped on average where n {\displaystyle n} n is the number of keys and m {\displaystyle m} m is the number of slots
+> ..when a hash table is resized, only n/m keys need to be remapped on average where nis the number of keys and m is the number of slots
 
 ## How does Maglev hashing work?
 For each bucket(server) we generate a preference list for keys. The preference
